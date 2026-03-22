@@ -669,7 +669,7 @@
     }
 
     .msg-avatar.ai {
-      background: linear-gradient(135deg, #0a84ff, #5e5ce6);
+      background: transparent;
       font-size: 14px;
     }
 
@@ -908,6 +908,39 @@
       #input-area { padding: 12px 16px 16px; }
     }
 
+
+    /* ── SKELETON LOADER ───────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position: 600px 0; }
+    }
+    .skeleton-bubble {
+      background: var(--ai-bubble);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      border-bottom-left-radius: 6px;
+      padding: 16px;
+      max-width: 72%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .skeleton-line {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 0%,
+        rgba(255,255,255,0.10) 40%,
+        rgba(255,255,255,0.04) 80%
+      );
+      background-size: 600px 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+    .skeleton-line.w-80 { width: 80%; }
+    .skeleton-line.w-60 { width: 60%; }
+    .skeleton-line.w-90 { width: 90%; }
+    .skeleton-line.w-40 { width: 40%; }
+
     /* ── MARKDOWN-LIKE FORMATTING ──────────────────────────────── */
     .bubble code {
       font-family: 'SF Mono', 'Menlo', monospace;
@@ -1122,6 +1155,7 @@
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────
+const MAKER_NAME = 'Aryan Suryawanshi'; // ← Your name shown when asked 'who made you'
 const GOOGLE_CLIENT_ID = '513306746577-cdid8ao0uij25msj9lqiqj36fr7s0rr4.apps.googleusercontent.com'; // ← Replace this
 const BACKEND_URL = '/api/chat'; // Vercel serverless
 
@@ -1360,6 +1394,10 @@ function updateSendBtn() {
   sendBtn.disabled = !input.value.trim() && !attachedImage;
 }
 
+sendBtn.addEventListener('click', () => {
+  if (!sendBtn.disabled) sendMessage();
+});
+
 // ── SEND MESSAGE ───────────────────────────────────────────────────
 async function sendMessage() {
   const text = input.value.trim();
@@ -1489,13 +1527,12 @@ function appendTyping() {
   wrapper.className = 'message-wrapper';
   wrapper.innerHTML = `
     <div class="message-row">
-      <div class="msg-avatar ai"><svg class="surya-logo-svg" width="52" height="52" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="scT" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFF8D6"/><stop offset="35%" stop-color="#F5C842"/><stop offset="100%" stop-color="#C8860A"/></radialGradient><radialGradient id="sgT" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F5C842" stop-opacity="0.22"/><stop offset="100%" stop-color="#F5C842" stop-opacity="0"/></radialGradient><linearGradient id="srT" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF0A0"/><stop offset="100%" stop-color="#B8720A"/></linearGradient><linearGradient id="srdT" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F5C842"/><stop offset="100%" stop-color="#8A5500"/></linearGradient><linearGradient id="srngT" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8F4E8"/><stop offset="40%" stop-color="#D4C090"/><stop offset="100%" stop-color="#8A6A20"/></linearGradient></defs><circle class="s-glow" cx="200" cy="200" r="138" fill="url(#sgT)"/><g class="s-rays-card"><g transform="translate(200,200) rotate(0)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srT)"/></g><g transform="translate(200,200) rotate(90)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srT)"/></g><g transform="translate(200,200) rotate(180)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srT)"/></g><g transform="translate(200,200) rotate(270)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srT)"/></g></g><g class="s-rays-diag"><g transform="translate(200,200) rotate(45)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdT)"/></g><g transform="translate(200,200) rotate(135)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdT)"/></g><g transform="translate(200,200) rotate(225)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdT)"/></g><g transform="translate(200,200) rotate(315)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdT)"/></g></g><g class="s-ring"><circle cx="200" cy="200" r="76" fill="none" stroke="url(#srngT)" stroke-width="2.5" stroke-dasharray="8 6"/></g><circle cx="200" cy="200" r="67" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.45"/><g class="s-core"><circle cx="200" cy="200" r="54" fill="url(#scT)"/><ellipse class="s-shine" cx="187" cy="187" rx="18" ry="12" fill="white" opacity="0.18"/></g></svg></div>
-      <div class="bubble ai">
-        <div class="typing-indicator">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
+      <div class="msg-avatar ai"><svg class="surya-logo-svg" width="38" height="38" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="scA2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFF8D6"/><stop offset="35%" stop-color="#F5C842"/><stop offset="100%" stop-color="#C8860A"/></radialGradient><radialGradient id="sgA2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F5C842" stop-opacity="0.22"/><stop offset="100%" stop-color="#F5C842" stop-opacity="0"/></radialGradient><linearGradient id="srA2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF0A0"/><stop offset="100%" stop-color="#B8720A"/></linearGradient><linearGradient id="srdA2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F5C842"/><stop offset="100%" stop-color="#8A5500"/></linearGradient><linearGradient id="srngA2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F8F4E8"/><stop offset="40%" stop-color="#D4C090"/><stop offset="100%" stop-color="#8A6A20"/></linearGradient></defs><circle class="s-glow" cx="200" cy="200" r="138" fill="url(#sgA2)"/><g class="s-rays-card"><g transform="translate(200,200) rotate(0)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srA2)"/></g><g transform="translate(200,200) rotate(90)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srA2)"/></g><g transform="translate(200,200) rotate(180)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srA2)"/></g><g transform="translate(200,200) rotate(270)"><rect x="-4.5" y="-115" width="9" height="36" rx="4.5" fill="url(#srA2)"/></g></g><g class="s-rays-diag"><g transform="translate(200,200) rotate(45)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdA2)"/></g><g transform="translate(200,200) rotate(135)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdA2)"/></g><g transform="translate(200,200) rotate(225)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdA2)"/></g><g transform="translate(200,200) rotate(315)"><rect x="-3.5" y="-110" width="7" height="28" rx="3.5" fill="url(#srdA2)"/></g></g><g class="s-ring"><circle cx="200" cy="200" r="76" fill="none" stroke="url(#srngA2)" stroke-width="2.5" stroke-dasharray="8 6"/></g><circle cx="200" cy="200" r="67" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.45"/><g class="s-core"><circle cx="200" cy="200" r="54" fill="url(#scA2)"/><ellipse class="s-shine" cx="187" cy="187" rx="18" ry="12" fill="white" opacity="0.18"/></g></svg></div>
+      <div class="skeleton-bubble">
+        <div class="skeleton-line w-90"></div>
+        <div class="skeleton-line w-80"></div>
+        <div class="skeleton-line w-60"></div>
+        <div class="skeleton-line w-40"></div>
       </div>
     </div>`;
   messagesEl.appendChild(wrapper);
