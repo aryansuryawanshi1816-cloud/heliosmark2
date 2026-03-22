@@ -1,0 +1,12 @@
+{
+  "name": "helios",
+  "version": "2.0.0",
+  "description": "Helios — AI Assistant powered by Kimi K2.5 — Kimi K2.5 powered AI assistant",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
